@@ -1,0 +1,266 @@
+:root {
+  --sidebar: #102820;
+  --sidebar-link: #dcefe7;
+  --brand: #28a06d;
+  --surface: #ffffff;
+  --soft: #f5f7f9;
+  --line: #dce3ea;
+}
+
+body {
+  background: var(--soft);
+}
+
+[data-bs-theme="dark"] body {
+  --surface: #1b222b;
+  --soft: #111820;
+  --line: #303b47;
+}
+
+.app-frame {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: var(--sidebar);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-height: 100vh;
+  padding: 24px;
+  position: sticky;
+  top: 0;
+}
+
+.brand {
+  align-items: center;
+  color: #fff;
+  display: inline-flex;
+  font-size: 1.2rem;
+  font-weight: 800;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.sidebar .nav-link {
+  border-radius: 8px;
+  color: var(--sidebar-link);
+  font-weight: 700;
+  padding: 10px 12px;
+}
+
+.sidebar .nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.content {
+  padding: 34px;
+}
+
+.surface,
+.metric-card,
+.empty-state {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(16, 40, 32, 0.08);
+}
+
+.page-title {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 850;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.eyebrow {
+  color: var(--brand);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.metric-card {
+  display: grid;
+  gap: 8px;
+  min-height: 150px;
+  padding: 22px;
+}
+
+.metric-card i {
+  color: var(--brand);
+  font-size: 1.6rem;
+}
+
+.metric-card span {
+  color: var(--bs-secondary-color);
+  font-weight: 700;
+}
+
+.metric-card strong {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.vault-card {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.vault-card h2,
+.surface h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.detail-list {
+  display: grid;
+  gap: 22px;
+  margin: 0;
+}
+
+.detail-list dt {
+  color: var(--bs-secondary-color);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.detail-list dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.list-row {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.list-row:last-child {
+  border-bottom: 0;
+}
+
+.empty-state {
+  padding: 42px;
+}
+
+.auth-panel {
+  align-items: start;
+  display: grid;
+  gap: 40px;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 440px);
+}
+
+.auth-narrow {
+  margin: 0 auto;
+  max-width: 560px;
+}
+
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(16, 40, 32, 0.08);
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+}
+
+.form-card label,
+.check-row {
+  display: grid;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.check-row {
+  align-items: center;
+  display: flex;
+}
+
+.form-card input,
+.form-card textarea,
+.form-card select,
+.surface input,
+.surface textarea,
+.surface select {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.password-check {
+  background: rgba(40, 160, 109, 0.08);
+  border: 1px solid rgba(40, 160, 109, 0.24);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+#strength-hints {
+  display: grid;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#strength-hints li {
+  color: var(--bs-secondary-color);
+  font-size: 0.9rem;
+}
+
+#strength-hints li::before {
+  color: var(--bs-warning);
+  content: "!";
+  font-weight: 900;
+  margin-right: 8px;
+}
+
+#strength-hints li.passed {
+  color: var(--bs-success);
+}
+
+#strength-hints li.passed::before {
+  content: "OK";
+  font-size: 0.78rem;
+}
+
+.toast-stack {
+  position: fixed;
+  right: 24px;
+  top: 24px;
+  width: min(360px, calc(100vw - 32px));
+  z-index: 1080;
+}
+
+@media (max-width: 860px) {
+  .app-frame {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    min-height: auto;
+    position: static;
+  }
+
+  .content {
+    padding: 22px;
+  }
+
+  .auth-panel {
+    grid-template-columns: 1fr;
+  }
+}

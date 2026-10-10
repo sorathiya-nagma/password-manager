@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings | SecureVault{% endblock %}
+
+{% block content %}
+<p class="eyebrow">Account security</p>
+<h1 class="page-title mb-4">Settings</h1>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <section class="surface p-4">
+      <h2>Profile</h2>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="profile">
+        {{ profile_form.as_p }}
+        <button class="btn btn-primary" type="submit">Save profile</button>
+      </form>
+    </section>
+  </div>
+  <div class="col-lg-6">
+    <section class="surface p-4 mb-4">
+      <h2>Two-Factor Authentication</h2>
+      {% if profile.totp_enabled %}
+        <p class="text-success">2FA is enabled.</p>
+        <form method="post">{% csrf_token %}<input type="hidden" name="action" value="disable_2fa"><button class="btn btn-outline-danger">Disable 2FA</button></form>
+      {% else %}
+        {% if not totp_secret %}
+          <form method="post">{% csrf_token %}<input type="hidden" name="action" value="prepare_2fa"><button class="btn btn-outline-primary">Create 2FA Secret</button></form>
+        {% else %}
+          <p class="text-secondary">Add this secret to an authenticator app, then enter the current code.</p>
+          <code class="d-block mb-3">{{ totp_secret }}</code>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="enable_2fa">
+            {{ totp_form.as_p }}
+            <button class="btn btn-primary">Enable 2FA</button>
+          </form>
+        {% endif %}
+      {% endif %}
+    </section>
+    <section class="surface p-4">
+      <h2>Preferences & Danger Zone</h2>
+      <form method="post" class="mb-3">{% csrf_token %}<input type="hidden" name="action" value="dark_mode"><button class="btn btn-outline-secondary">Toggle Dark Mode</button></form>
+      <form method="post" onsubmit="return confirm('Delete your account and all vault data?')">{% csrf_token %}<input type="hidden" name="action" value="delete_account"><button class="btn btn-danger">Delete Account</button></form>
+    </section>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Register | SecureVault{% endblock %}
+
+{% block content %}
+<section class="auth-panel">
+  <div>
+    <p class="eyebrow">Private by default</p>
+    <h1>Create your vault</h1>
+    <p class="muted">A Django account protects access. Fernet authenticated encryption protects stored secrets.</p>
+  </div>
+  <form method="post" class="form-card">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+      <label>
+        {{ field.label }}
+        {{ field }}
+        {% if field.errors %}<span class="error">{{ field.errors|striptags }}</span>{% endif %}
+      </label>
+    {% endfor %}
+    <button class="primary" type="submit">Create vault</button>
+    <p class="small">Already registered? <a href="{% url 'accounts:login' %}">Log in</a></p>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | SecureVault{% endblock %}
+
+{% block content %}
+<p class="eyebrow">Security overview</p>
+<h1 class="page-title mb-4">Dashboard</h1>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="metric-card"><i class="bi bi-key"></i><span>Total Passwords</span><strong>{{ total_passwords }}</strong></div></div>
+  <div class="col-md-3"><div class="metric-card"><i class="bi bi-star"></i><span>Favorites</span><strong>{{ favorite_count }}</strong></div></div>
+  <div class="col-md-3"><div class="metric-card"><i class="bi bi-shield-check"></i><span>Health Score</span><strong>{{ health.score }}%</strong></div></div>
+  <div class="col-md-3"><div class="metric-card"><i class="bi bi-exclamation-triangle"></i><span>Weak Alerts</span><strong>{{ health.weak_count }}</strong></div></div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <section class="surface p-4 mb-4">
+      <h2>Recently Added</h2>
+      {% for entry in recent_entries %}
+        <div class="list-row"><span>{{ entry.title }}</span><a href="{% url 'vault:detail' entry.pk %}">Open</a></div>
+      {% empty %}
+        <p class="text-secondary">No passwords saved yet.</p>
+      {% endfor %}
+    </section>
+    <section class="surface p-4">
+      <h2>Weak Password Alerts</h2>
+      {% for entry in weak_entries %}
+        <div class="list-row text-danger"><span>{{ entry.title }}</span><a href="{% url 'vault:update' entry.pk %}">Fix</a></div>
+      {% empty %}
+        <p class="text-secondary">No weak passwords detected.</p>
+      {% endfor %}
+      {% if reused_entries %}
+        <hr>
+        <h2>Password Reuse</h2>
+        {% for entry in reused_entries %}
+          <div class="list-row"><span>{{ entry.title }}</span><span class="badge text-bg-warning">Reused</span></div>
+        {% endfor %}
+      {% endif %}
+    </section>
+  </div>
+  <div class="col-lg-5">
+    <section class="surface p-4 mb-4">
+      <h2>Categories</h2>
+      {% for category, count in category_counts %}
+        <div class="list-row"><span>{{ category }}</span><span class="badge text-bg-secondary">{{ count }}</span></div>
+      {% empty %}
+        <p class="text-secondary">No categories yet.</p>
+      {% endfor %}
+    </section>
+    <section class="surface p-4">
+      <h2>Login & Audit History</h2>
+      {% for login in login_history %}
+        <div class="small text-secondary">{{ login.created_at|date:"M j, g:i A" }} · {% if login.successful %}Success{% else %}Failed{% endif %}</div>
+      {% endfor %}
+      <hr>
+      {% for log in audit_logs %}
+        <div class="small text-secondary">{{ log.created_at|date:"M j, g:i A" }} · {{ log.action }}</div>
+      {% empty %}
+        <p class="text-secondary">No audit events yet.</p>
+      {% endfor %}
+    </section>
+  </div>
+</div>
+{% endblock %}

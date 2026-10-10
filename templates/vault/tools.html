@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Tools | SecureVault{% endblock %}
+
+{% block content %}
+<p class="eyebrow">Security tools</p>
+<h1 class="page-title mb-4">Generator, Import, Export</h1>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <section class="surface p-4">
+      <h2>Password Generator</h2>
+      <form method="get" class="row g-3">
+        {% for field in generator_form %}
+          <div class="col-sm-6">
+            <label class="form-label fw-bold">{{ field.label }}</label>
+            {{ field }}
+          </div>
+        {% endfor %}
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit"><i class="bi bi-magic"></i> Generate</button>
+        </div>
+      </form>
+      {% if generated_password %}
+        <div class="input-group mt-3">
+          <input class="form-control" id="generated-tool-password" value="{{ generated_password }}" readonly>
+          <button class="btn btn-outline-secondary" type="button" data-copy-field="#generated-tool-password">Copy</button>
+        </div>
+      {% endif %}
+    </section>
+  </div>
+  <div class="col-lg-6">
+    <section class="surface p-4 mb-4">
+      <h2>Export</h2>
+      <p class="text-secondary">CSV contains readable passwords. Encrypted JSON keeps encrypted fields for backup/restore.</p>
+      <a class="btn btn-outline-primary" href="{% url 'vault:export_csv' %}"><i class="bi bi-filetype-csv"></i> Export CSV</a>
+      <a class="btn btn-outline-success" href="{% url 'vault:export_json' %}"><i class="bi bi-file-earmark-lock"></i> Encrypted JSON</a>
+    </section>
+    <section class="surface p-4">
+      <h2>Import / Restore</h2>
+      <form method="post" action="{% url 'vault:import_csv' %}" enctype="multipart/form-data" class="mb-3">
+        {% csrf_token %}
+        {{ csv_form.csv_file }}
+        <button class="btn btn-sm btn-primary mt-2" type="submit">Import CSV</button>
+      </form>
+      <form method="post" action="{% url 'vault:restore_json' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ backup_form.backup_file }}
+        <button class="btn btn-sm btn-success mt-2" type="submit">Restore encrypted backup</button>
+      </form>
+    </section>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" data-bs-theme="{% if user.is_authenticated and user.security_profile.dark_mode %}dark{% else %}light{% endif %}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block title %}SecureVault{% endblock %}</title>
+  {% load static %}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'vault/styles.css' %}">
+</head>
+<body>
+  <div class="app-frame">
+    <aside class="sidebar">
+      <a class="brand" href="{% url 'dashboard:home' %}"><i class="bi bi-shield-lock"></i> SecureVault</a>
+      {% if user.is_authenticated %}
+        <nav class="nav flex-column gap-1">
+          <a class="nav-link" href="{% url 'dashboard:home' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+          <a class="nav-link" href="{% url 'vault:list' %}"><i class="bi bi-key"></i> Passwords</a>
+          <a class="nav-link" href="{% url 'vault:create' %}"><i class="bi bi-plus-circle"></i> Add Password</a>
+          <a class="nav-link" href="{% url 'vault:tools' %}"><i class="bi bi-tools"></i> Tools</a>
+          <a class="nav-link" href="{% url 'accounts:settings' %}"><i class="bi bi-gear"></i> Settings</a>
+        </nav>
+        <form action="{% url 'accounts:logout' %}" method="post" class="mt-auto">
+          {% csrf_token %}
+          <button class="btn btn-outline-light w-100" type="submit"><i class="bi bi-box-arrow-right"></i> Log out</button>
+        </form>
+      {% else %}
+        <nav class="nav flex-column gap-1">
+          <a class="nav-link" href="{% url 'accounts:login' %}"><i class="bi bi-box-arrow-in-right"></i> Log in</a>
+          <a class="nav-link" href="{% url 'accounts:register' %}"><i class="bi bi-person-plus"></i> Register</a>
+        </nav>
+      {% endif %}
+    </aside>
+
+    <main class="content">
+      {% if messages %}
+        <div class="toast-stack">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} shadow-sm">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'vault/app.js' %}"></script>
+</body>
+</html>

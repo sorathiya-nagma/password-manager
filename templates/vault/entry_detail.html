@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ entry.title }} | SecureVault{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+  <div>
+    <p class="eyebrow">Vault item</p>
+    <h1 class="page-title">{{ entry.title }}</h1>
+    {% if entry.website %}<a href="{{ entry.website }}" target="_blank" rel="noreferrer">{{ entry.website }}</a>{% endif %}
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-primary" href="{% url 'vault:update' entry.pk %}"><i class="bi bi-pencil"></i> Edit</a>
+    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i> Delete</button>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <section class="surface p-4">
+      <dl class="detail-list">
+        <div><dt>Username</dt><dd>{{ entry.username|default:'-' }}</dd></div>
+        <div><dt>Email</dt><dd>{{ entry.email|default:'-' }}</dd></div>
+        <div>
+          <dt>Password</dt>
+          <dd class="d-flex flex-wrap align-items-center gap-2">
+            <code id="password-output">Hidden until revealed</code>
+            <button class="btn btn-sm btn-outline-primary secure-action" data-url="{% url 'vault:reveal_password' entry.pk %}" data-target="#password-output">Reveal</button>
+            <button class="btn btn-sm btn-outline-secondary secure-copy" data-url="{% url 'vault:copy_password' entry.pk %}">Copy</button>
+          </dd>
+        </div>
+        <div><dt>Category</dt><dd>{{ entry.category|default:'Uncategorized' }}</dd></div>
+        <div><dt>Tags</dt><dd>{{ entry.tags|default:'-' }}</dd></div>
+        <div><dt>Notes</dt><dd>{{ entry.notes|linebreaksbr|default:'-' }}</dd></div>
+      </dl>
+    </section>
+  </div>
+  <div class="col-lg-4">
+    <section class="surface p-4">
+      <h2>Password Health</h2>
+      <p class="badge text-bg-{% if health.label == 'Weak' %}danger{% elif health.label == 'Medium' %}warning{% else %}success{% endif %}">{{ health.label }}</p>
+      {% if health.issues %}
+        <ul class="small text-secondary">
+          {% for issue in health.issues %}<li>{{ issue }}</li>{% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-secondary">No strength issues detected.</p>
+      {% endif %}
+      <p class="small text-secondary">Created {{ entry.created_at|date:"M j, Y" }} · Updated {{ entry.updated_at|date:"M j, Y" }}</p>
+    </section>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"><h2 class="modal-title fs-5">Delete password?</h2></div>
+      <div class="modal-body">This removes the encrypted record from your vault.</div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form method="post" action="{% url 'vault:delete' entry.pk %}">
+          {% csrf_token %}
+          <button class="btn btn-danger" type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
